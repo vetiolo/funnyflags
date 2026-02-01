@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 
+import "./App.css"
+
 function App() {
-  const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [countries, setCountries] = useState([]);
+  const [continent, setContinent] = useState("europa");
 
   useEffect(() => {
     // Llamada al backend
-    fetch("http://localhost:8000/countries")
+    fetch(`http://localhost:8000/countries/${continent}`)
       .then((res) => res.json())
       .then((data) => {
         setCountries(data);
@@ -22,15 +26,17 @@ function App() {
     <div>Cargando...</div>
   ) : (
     <div style={{ padding: "20px" }}>
-      <h1>Lista de Paises</h1>
-      <h4>Códigos</h4>
-      <ul>
+      <h1>Banderas de {continent}</h1>
+      <div className="boxes">
         {countries.map((country, index) => (
-          <li key={index}>
-            {country.code}
-          </li>
+          <div className="box">
+            <img
+              src={`/src/assets/flags/${country.code.toLowerCase()}.svg`}
+              style={{ width: "5rem" }}
+            />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

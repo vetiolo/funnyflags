@@ -1,0 +1,15 @@
+.boxes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  justify-items: center;
+}
+
+.box {
+  padding: 1rem;
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--text-color);
+  margin-block: 1rem;
+  width: fit-content;
+}
