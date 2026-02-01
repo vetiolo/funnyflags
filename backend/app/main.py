@@ -21,9 +21,9 @@ def read_root():
     return {"message": "API funcionando"}
 
 @app.get("/countries")
-def get_items():
+def get_countries():
 
-    """paises"""
+    """get all countries"""
 
     conn = get_connection()
     cur = conn.cursor()
@@ -43,6 +43,46 @@ def get_items():
     result = {}
 
     for code, name in rows:
-        result.setdefault(code, {"code": code, "name": []})["name"].append(name)
+        result.setdefault(code, {
+            "code": code,
+            "name": []
+        })["name"].append(name)
+
+    return list(result.values())
+
+@app.get("/countries/{continent}")
+def get_countries_by_continent(continent: str):
+    
+    """get countries by continent"""
+    
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT c.code, cn.name
+        FROM continents ct
+        JOIN countries c
+            ON c.continent_id = ct.id
+        JOIN country_names cn
+            ON cn.country_id = c.id
+        WHERE ct.name = %s
+        ORDER BY c.code
+    """, (continent,))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    if not rows:
+        return []
+
+    result = {}
+
+    for code, name in rows:
+        result.setdefault(code, {
+            "code": code,
+            "name": []
+        })["name"].append(name)
 
     return list(result.values())
