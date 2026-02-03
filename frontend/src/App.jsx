@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import "./App.css"
+import "./App.css";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -27,15 +27,30 @@ function App() {
   ) : (
     <div style={{ padding: "20px" }}>
       <h1>Banderas de {continent}</h1>
-      <div className="boxes">
+      {/* <div className="boxes">
         {countries.map((country, index) => (
           <div className="box">
             <img
               src={`/src/assets/flags/${country.code.toLowerCase()}.svg`}
               style={{ width: "5rem" }}
             />
+            <input
+              type="text"
+              name="name"
+              required
+              autocomplete="given-name"
+            />
           </div>
         ))}
+      </div> */}
+      <div className="box">
+        <img src={`/src/assets/flags/es.svg`} style={{ width: "10rem", borderRadius: "4px" }} />
+        <div className="guessDiv">
+          <input type="text" name="name" required autocomplete="given-name" />
+          <button>Verificar</button>
+          <button>Saltar</button>
+          <button>¿Pista?</button>
+        </div>
       </div>
     </div>
   );
