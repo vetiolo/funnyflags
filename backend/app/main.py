@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db import get_connection
 
+import random
+
 app = FastAPI()  # ← primero
 
 origins = [
@@ -48,7 +50,11 @@ def get_countries():
             "name": []
         })["name"].append(name)
 
-    return list(result.values())
+    countries = list(result.values())
+
+    random.shuffle(countries)
+
+    return countries
 
 @app.get("/countries/{continent}")
 def get_countries_by_continent(continent: str):
@@ -66,7 +72,6 @@ def get_countries_by_continent(continent: str):
         JOIN country_names cn
             ON cn.country_id = c.id
         WHERE ct.name = %s
-        ORDER BY c.code
     """, (continent,))
 
     rows = cur.fetchall()
@@ -85,4 +90,8 @@ def get_countries_by_continent(continent: str):
             "name": []
         })["name"].append(name)
 
-    return list(result.values())
+    countries = list(result.values())
+
+    random.shuffle(countries)
+
+    return countries
