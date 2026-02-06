@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 
-import "./App.css";
+import { Flag } from "../components/Flag";
+import { GuessWidget } from "../components/GuessWidget";
 
-function App() {
+import "../styles/FlagsGame.css";
+import { useParams } from "react-router-dom";
+
+export const FlagsGame = () => {
+  const { continent } = useParams();
+  
   const [loading, setLoading] = useState(true);
-
   const [countries, setCountries] = useState([]);
-  const [continent, setContinent] = useState("europa");
 
   useEffect(() => {
     // Llamada al backend
@@ -28,21 +32,15 @@ function App() {
     <div className="container">
       <div>
         <h1>Banderas de {continent}</h1>
-        <div className="box">
-          <img
-            src={`/src/assets/flags/es.svg`}
-            style={{ width: "10rem", borderRadius: "4px" }}
-          />
-          <div className="guessDiv">
-            <input type="text" name="name" required autocomplete="given-name" />
-            <button>Verificar</button>
-            <button>Saltar</button>
-            <button>¿Pista?</button>
-          </div>
-        </div>
+        {countries.map((country) => {
+          return (
+            <div className="box" key={country.code}>
+              <Flag country_code={country.code.toLowerCase()} />
+              <GuessWidget />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
-}
-
-export default App;
+};
