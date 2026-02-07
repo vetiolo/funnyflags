@@ -35,3 +35,7 @@ input[type="text"] {
 .guessDiv button:hover {
   background-color: #6186c7;
 }
+
+button:disabled {
+  background-color: #1f304e;
+}

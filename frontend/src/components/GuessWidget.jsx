@@ -1,12 +1,12 @@
-import "../styles/GuessWidget.css"
+import "../styles/GuessWidget.css";
 
-export const GuessWidget = () => {
+export const GuessWidget = ({ success, skip }) => {
   return (
     <div className="guessDiv">
       <input type="text" name="name" required autoComplete="given-name" />
-      <button>Verificar</button>
-      <button>Saltar</button>
-      <button>¿Pista?</button>
+      <button onClick={() => success()}>Verificar</button>
+      <button onClick={() => skip()}>Saltar</button>
+      <button disabled>¿Pista?</button>
     </div>
   );
 };
