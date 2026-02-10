@@ -6,6 +6,8 @@ import { GuessWidget } from "../components/GuessWidget";
 import "../styles/FlagsGame.css";
 import { useParams } from "react-router-dom";
 
+import { normalizeCountryName } from "../helpers/functions.js";
+
 export const FlagsGame = () => {
   const { continent } = useParams();
 
@@ -30,7 +32,7 @@ export const FlagsGame = () => {
         // const prueba = res.slice(0, 5);
 
         setCountries(res.map((country) => ({ ...country, guess: false })));
-        setActualIndex(0);  
+        setActualIndex(0);
         setNumOfFlags(res.length);
         setLoading(false);
       })
@@ -42,6 +44,10 @@ export const FlagsGame = () => {
 
   // pais actual
   const actualCountry = countries[actualIndex] ?? null;
+
+  const actualCountryNames = countries[actualIndex]?.name.map((name) => {
+    return normalizeCountryName(name);
+  });
 
   // acierto
   const successGuess = () => {
@@ -104,7 +110,9 @@ export const FlagsGame = () => {
 
   // verifica si el valor del input es correcto
   const wellOrWrong = () => {
-    if (actualCountry.name.includes(inputRef.current.value)) {
+    if (
+      actualCountryNames.includes(normalizeCountryName(inputRef.current.value))
+    ) {
       successGuess();
     } else {
       console.log("mal");
@@ -117,7 +125,9 @@ export const FlagsGame = () => {
   return (
     <div className="container">
       <div>
-        <div className="gameInfoHeader">Banderas de {continent} | {successCount} / {numOfFlags}</div>
+        <div className="gameInfoHeader">
+          Banderas de {continent} | {successCount} / {numOfFlags}
+        </div>
         <div className="box">
           <Flag country_code={actualCountry?.code.toLowerCase()} />
           <GuessWidget
