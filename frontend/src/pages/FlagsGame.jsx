@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Flag } from "../components/Flag";
 import { GuessWidget } from "../components/GuessWidget";
@@ -14,6 +14,11 @@ export const FlagsGame = () => {
   const [countries, setCountries] = useState([]);
   const [actualIndex, setActualIndex] = useState(0);
 
+  const [numOfFlags, setNumOfFlags] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+
+  const inputRef = useRef();
+
   useEffect(() => {
     setLoading(true);
 
@@ -22,10 +27,11 @@ export const FlagsGame = () => {
       .then((res) => res.json())
       .then((res) => {
         // prueba con pocos paises
-        // const prueba = res.slice(0, 10);
+        // const prueba = res.slice(0, 5);
 
         setCountries(res.map((country) => ({ ...country, guess: false })));
-        setActualIndex(0);
+        setActualIndex(0);  
+        setNumOfFlags(res.length);
         setLoading(false);
       })
       .catch((err) => {
@@ -34,8 +40,11 @@ export const FlagsGame = () => {
       });
   }, [continent]);
 
+  // pais actual
+  const actualCountry = countries[actualIndex] ?? null;
+
   // acierto
-  const handleSuccess = () => {
+  const successGuess = () => {
     setCountries((prev) =>
       prev.map((item, index) =>
         index === actualIndex ? { ...item, guess: true } : item,
@@ -53,9 +62,18 @@ export const FlagsGame = () => {
 
       return 0;
     });
+
+    // suma el numero de aciertos
+    setSuccessCount((prevValue) => prevValue + 1);
+
+    // limpiar el input
+    inputRef.current.value = "";
+
+    // focus en el input por si clicka algun boton
+    inputRef.current.focus();
   };
 
-  // skippear
+  // boton de skippear
   const handleSkip = () => {
     setActualIndex((prev) => {
       if (prev + 1 < countries.length) {
@@ -67,9 +85,31 @@ export const FlagsGame = () => {
 
       return 0;
     });
+
+    // focus en el input por si clicka algun boton
+    inputRef.current.focus();
   };
 
-  const actualCountry = countries[actualIndex] ?? null;
+  // boton de verificar
+  const handleSuccess = () => {
+    wellOrWrong();
+  };
+
+  // tecla enter al input
+  const handleKeyDown = (e) => {
+    if (e.key == "Enter") {
+      wellOrWrong();
+    }
+  };
+
+  // verifica si el valor del input es correcto
+  const wellOrWrong = () => {
+    if (actualCountry.name.includes(inputRef.current.value)) {
+      successGuess();
+    } else {
+      console.log("mal");
+    }
+  };
 
   if (loading) return <div>Cargando...</div>;
   if (countries.length === 0) return <div>END</div>;
@@ -77,10 +117,15 @@ export const FlagsGame = () => {
   return (
     <div className="container">
       <div>
-        <h1>Banderas de {continent}</h1>
+        <div className="gameInfoHeader">Banderas de {continent} | {successCount} / {numOfFlags}</div>
         <div className="box">
           <Flag country_code={actualCountry?.code.toLowerCase()} />
-          <GuessWidget success={handleSuccess} skip={handleSkip} />
+          <GuessWidget
+            success={handleSuccess}
+            skip={handleSkip}
+            onKeyDown={handleKeyDown}
+            inputRef={inputRef}
+          />
         </div>
       </div>
     </div>
