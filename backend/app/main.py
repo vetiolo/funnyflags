@@ -22,58 +22,36 @@ app.add_middleware(
 def read_root():
     return {"message": "API funcionando"}
 
-@app.get("/countries")
-def get_countries():
 
+@app.get("/countries/{continent}")
+def get_countries_by_continent(continent: str):
+    """get countries by continent"""
     """get all countries"""
 
     conn = get_connection()
     cur = conn.cursor()
-
-    cur.execute("""
-        SELECT c.code, cn.name
-        FROM countries c
-        JOIN country_names cn
-            ON cn.country_id = c.id
-    """)
     
-    rows = cur.fetchall()
+    if continent.lower() == "world":
+        query = """
+            SELECT c.code, cn.name
+            FROM countries c
+            JOIN country_names cn
+                ON cn.country_id = c.id
+        """
+        params = ()
+    else:
+        query = """
+            SELECT c.code, cn.name
+            FROM continents ct
+            JOIN countries c
+                ON c.continent_id = ct.id
+            JOIN country_names cn
+                ON cn.country_id = c.id
+            WHERE LOWER(ct.name) = LOWER(%s)
+        """
+        params = (continent,)
 
-    cur.close()
-    conn.close()
-
-    result = {}
-
-    for code, name in rows:
-        result.setdefault(code, {
-            "code": code,
-            "name": []
-        })["name"].append(name)
-
-    countries = list(result.values())
-
-    random.shuffle(countries)
-
-    return countries
-
-@app.get("/countries/{continent}")
-def get_countries_by_continent(continent: str):
-    
-    """get countries by continent"""
-    
-    conn = get_connection()
-    cur = conn.cursor()
-
-    cur.execute("""
-        SELECT c.code, cn.name
-        FROM continents ct
-        JOIN countries c
-            ON c.continent_id = ct.id
-        JOIN country_names cn
-            ON cn.country_id = c.id
-        WHERE ct.name = %s
-    """, (continent,))
-
+    cur.execute(query, params)
     rows = cur.fetchall()
 
     cur.close()
@@ -91,7 +69,6 @@ def get_countries_by_continent(continent: str):
         })["name"].append(name)
 
     countries = list(result.values())
-
     random.shuffle(countries)
 
     return countries
