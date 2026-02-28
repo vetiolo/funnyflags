@@ -6,7 +6,7 @@ import { GuessWidget } from "../components/GuessWidget";
 import "../styles/FlagsGame.css";
 import { useParams } from "react-router-dom";
 
-import { normalizeCountryName } from "../helpers/functions.js";
+import { normalizeCountryName } from "../helpers/normalize.js";
 
 export const FlagsGame = () => {
   const { continent } = useParams();
@@ -92,6 +92,9 @@ export const FlagsGame = () => {
       return 0;
     });
 
+    // limpiar el input
+    inputRef.current.value = "";
+
     // focus en el input por si clicka algun boton
     inputRef.current.focus();
   };
@@ -119,24 +122,31 @@ export const FlagsGame = () => {
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (countries.length === 0) return <div>END</div>;
-
   return (
     <div className="container">
       <div>
-        <div className="gameInfoHeader">
-          Banderas de {continent} | {successCount} / {numOfFlags}
-        </div>
-        <div className="box">
-          <Flag country_code={actualCountry?.code.toLowerCase()} />
-          <GuessWidget
-            success={handleSuccess}
-            skip={handleSkip}
-            onKeyDown={handleKeyDown}
-            inputRef={inputRef}
-          />
-        </div>
+        {loading ? (
+          <div>Cargando...</div>
+        ) : (
+          <>
+            <div className="gameInfoHeader">
+              Banderas de {continent} | {successCount} / {numOfFlags}
+            </div>
+            {countries.length !== 0 ? (
+              <div className="box">
+                <Flag country_code={actualCountry?.code.toLowerCase()} />
+                <GuessWidget
+                  success={handleSuccess}
+                  skip={handleSkip}
+                  onKeyDown={handleKeyDown}
+                  inputRef={inputRef}
+                />
+              </div>
+            ) : (
+              <div>END</div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,19 @@
+.gamesMenuContainer {
+  padding: 1rem;
+}
+
+.modesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gamesButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.separator {
+  margin-block: 1.5rem;
+  border: 1px solid white;
+}

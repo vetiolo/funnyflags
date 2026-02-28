@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
+import "../styles/GamesMenu.css";
+
 export const GamesMenu = () => {
   const navigate = useNavigate();
 
@@ -8,16 +10,27 @@ export const GamesMenu = () => {
   };
 
   return (
-    <>
-      <h2>Select the game</h2>
-      <div>Flags games</div>
-      <div>
-        <button onClick={() => chooseMode("europa")}>Europa</button>
-        <button onClick={() => chooseMode("america")}>America</button>
+    <div className="gamesMenuContainer">
+      <h2>Modos de juego</h2>
+
+      <div className="modesContainer">
+        <div>Juegos de banderas</div>
+        <div className="gamesButtons">
+          <button onClick={() => chooseMode("europa")}>Europa</button>
+          <button onClick={() => chooseMode("america")}>America</button>
+          <button onClick={() => chooseMode("asia")}>Asia</button>
+          <button onClick={() => chooseMode("africa")}>Africa</button>
+          <button onClick={() => chooseMode("oceania")}>Oceania</button>
+          <button onClick={() => chooseMode("world")}>El Mundo</button>
+        </div>
       </div>
 
-      <div>Maps games</div>
-      <div>Comming soon...</div>
-    </>
+      <div className="separator"></div>
+
+      <div className="modesContainer">
+        <div>Juegos de mapas</div>
+        <div>Proximamente...</div>
+      </div>
+    </div>
   );
 };
